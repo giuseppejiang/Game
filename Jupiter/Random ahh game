@@ -1,3 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Space Dodger</title>
+<style>
+  body {
+    background: black;
+    color: white;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+
+  canvas {
+    background: #111;
+    display: block;
+    margin: 20px auto;
+    border: 2px solid white;
+  }
+</style>
+</head>
+
+<body>
+<h1>🚀 Space Dodger</h1>
+<p>Move with ⬅️ ➡️ keys</p>
+
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script>
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -13,16 +42,14 @@ let asteroids = [];
 let score = 0;
 let gameOver = false;
 
-document.addEventListener("keydown", movePlayer);
-
-function movePlayer(e) {
+document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft" && player.x > 0) {
     player.x -= player.speed;
   }
   if (e.key === "ArrowRight" && player.x < canvas.width - player.width) {
     player.x += player.speed;
   }
-}
+});
 
 function spawnAsteroid() {
   asteroids.push({
@@ -49,7 +76,7 @@ function updateAsteroids() {
   asteroids.forEach(a => {
     a.y += a.speed;
 
-    // Collision detection
+    // Collision
     if (
       a.x < player.x + player.width &&
       a.x + a.size > player.x &&
@@ -64,14 +91,14 @@ function updateAsteroids() {
 }
 
 function drawScore() {
-  ctx.fillStyle = "#fff";
+  ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText("Score: " + score, 10, 30);
 }
 
 function gameLoop() {
   if (gameOver) {
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "white";
     ctx.font = "30px Arial";
     ctx.fillText("GAME OVER", 110, 300);
     return;
@@ -90,35 +117,7 @@ function gameLoop() {
 
 setInterval(spawnAsteroid, 1000);
 gameLoop();
-body {
-  background: #000;
-  color: #fff;
-  text-align: center;
-  font-family: Arial, sans-serif;
-}
+</script>
 
-canvas {
-  background: #111;
-  display: block;
-  margin: 0 auto;
-  border: 2px solid #fff;
-}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Space Dodger</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>🚀 Space Dodger</h1>
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
-  <p>Use ⬅️ ➡️ to move</p>
-
-  <script src="game.js"></script>
 </body>
 </html>
-space-dodger/
-├── index.html
-├── style.css
-└── game.js
