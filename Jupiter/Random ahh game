@@ -1,0 +1,124 @@
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let player = {
+  x: 180,
+  y: 540,
+  width: 40,
+  height: 40,
+  speed: 6
+};
+
+let asteroids = [];
+let score = 0;
+let gameOver = false;
+
+document.addEventListener("keydown", movePlayer);
+
+function movePlayer(e) {
+  if (e.key === "ArrowLeft" && player.x > 0) {
+    player.x -= player.speed;
+  }
+  if (e.key === "ArrowRight" && player.x < canvas.width - player.width) {
+    player.x += player.speed;
+  }
+}
+
+function spawnAsteroid() {
+  asteroids.push({
+    x: Math.random() * (canvas.width - 30),
+    y: -30,
+    size: 30,
+    speed: 3 + Math.random() * 3
+  });
+}
+
+function drawPlayer() {
+  ctx.fillStyle = "#0f0";
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+}
+
+function drawAsteroids() {
+  ctx.fillStyle = "#f00";
+  asteroids.forEach(a => {
+    ctx.fillRect(a.x, a.y, a.size, a.size);
+  });
+}
+
+function updateAsteroids() {
+  asteroids.forEach(a => {
+    a.y += a.speed;
+
+    // Collision detection
+    if (
+      a.x < player.x + player.width &&
+      a.x + a.size > player.x &&
+      a.y < player.y + player.height &&
+      a.y + a.size > player.y
+    ) {
+      gameOver = true;
+    }
+  });
+
+  asteroids = asteroids.filter(a => a.y < canvas.height + 40);
+}
+
+function drawScore() {
+  ctx.fillStyle = "#fff";
+  ctx.font = "20px Arial";
+  ctx.fillText("Score: " + score, 10, 30);
+}
+
+function gameLoop() {
+  if (gameOver) {
+    ctx.fillStyle = "#fff";
+    ctx.font = "30px Arial";
+    ctx.fillText("GAME OVER", 110, 300);
+    return;
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawPlayer();
+  drawAsteroids();
+  updateAsteroids();
+  drawScore();
+
+  score++;
+  requestAnimationFrame(gameLoop);
+}
+
+setInterval(spawnAsteroid, 1000);
+gameLoop();
+body {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+canvas {
+  background: #111;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid #fff;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Space Dodger</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🚀 Space Dodger</h1>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <p>Use ⬅️ ➡️ to move</p>
+
+  <script src="game.js"></script>
+</body>
+</html>
+space-dodger/
+├── index.html
+├── style.css
+└── game.js
